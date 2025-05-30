@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Associação Gentes da Banda</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2E8B57 0%, #228B22 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 420px;
+            max-width: 95vw;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2E8B57, #228B22);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '🤝';
+            font-size: 40px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #2E8B57;
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(45deg, #2E8B57, #228B22);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 139, 87, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2E8B57;
+            border: 2px solid #2E8B57;
+        }
+
+        .btn-secondary:hover {
+            background: #2E8B57;
+            color: white;
+        }
+
+        .btn-small {
+            width: auto;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: #2E8B57;
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .card-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2E8B57;
+        }
+
+        .member-info {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            margin: -30px -30px 25px -30px;
+            border-bottom: 3px solid #2E8B57;
+        }
+
+        .member-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #2E8B57, #228B22);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: #2E8B57;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .contribution-history {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .contribution-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border-left: 4px solid #2E8B57;
+        }
+
+        .emergency-btn {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+
+        .chat-container {
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f8f9fa;
+            margin: -30px -30px 20px -30px;
+            max-height: 250px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 20px;
+            max-width: 85%;
+            word-wrap: break-word;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message.own {
+            background: linear-gradient(45deg, #2E8B57, #228B22);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message.other {
+            background: white;
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+
+        .message-info {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 14px;
+        }
+
+        .chat-input button {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #2E8B57, #228B22);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            padding: 10px;
+            background: #f8d7da;
+            border-radius: 8px;
+        }
+
+        .success {
+            color: #155724;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            padding: 10px;
+            background: #d4edda;
+            border-radius: 8px;
+        }
+
+        .info-section {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2E8B57;
+        }
+
+        .info-section h4 {
+            color: #2E8B57;
+            margin-bottom: 8px;
+        }
+
+        .info-section p {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Associação Gentes da Banda</h1>
+            <p>Solidariedade • Auxílio Mútuo • Comunidade</p>
+        </div>
+
+        <!-- Tela de Login -->
+        <div id="loginScreen" class="screen active">
+            <div class="content">
+                <div class="info-section">
+                    <h4>🏛 Mocuba - Zambézia</h4>
+                    <p>Bairro Caminhos de Ferro de Moçambique (C.F.M)</p>
+                </div>
+
+                <h2 style="text-align: center; margin-bottom: 25px; color: #333;">Entrar na Associação</h2>
+                
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" placeholder="Sua senha">
+                </div>
+                <button class="btn" onclick="login()">Entrar</button>
+                <button class="btn btn-secondary" onclick="showRegister()">Inscrever-se como Membro</button>
+                <div id="loginError" class="error"></div>
+            </div>
+        </div>
+
+        <!-- Tela de Registro -->
+        <div id="registerScreen" class="screen">
+            <div class="content">
+                <h2 style="text-align: center; margin-bottom: 25px; color: #333;">Inscrição de Membro</h2>
+                
+                <div class="info-section">
+                    <h4>💰 Contribuição Anual</h4>
+                    <p>1.200 MT por ano • Pagamento integral ou parcelado • Benefícios a partir do ano seguinte</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerName">Nome Completo</label>
+                    <input type="text" id="registerName" placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="registerPhone">Telefone</label>
+                    <input type="tel" id="registerPhone" placeholder="+258 XX XXX XXXX">
+                </div>
+                <div class="form-group">
+                    <label for="registerAddress">Endereço</label>
+                    <input type="text" id="registerAddress" placeholder="Seu endereço completo">
+                </div>
+                <div class="form-group">
+                    <label for="membershipType">Tipo de Membro</label>
+                    <select id="membershipType">
+                        <option value="regular">Membro Regular</option>
+                        <option value="family_head">Chefe de Família</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar Senha</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirme sua senha">
+                </div>
+                <button class="btn" onclick="register()">Inscrever-se</button>
+                <button class="btn btn-secondary" onclick="showLogin()">Já sou membro</button>
+                <div id="registerError" class="error"></div>
+                <div id="registerSuccess" class="success"></div>
+            </div>
+        </div>
+
+        <!-- Tela Principal -->
+        <div id="mainScreen" class="screen">
+            <div class="content">
+                <div class="member-info">
+                    <div class="member-avatar" id="memberAvatar">M</div>
+                    <div style="text-align: center;">
+                        <strong id="memberName">Membro</strong>
+                        <div class="status-badge status-active" id="memberStatus">Ativo</div>
+                        <div style="margin-top: 10px;">
+                            <button class="btn-small btn-secondary" onclick="logout()">Sair</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="emergency-btn" onclick="requestEmergencyHelp()">
+                    🚨 SOLICITAR AJUDA DE EMERGÊNCIA
+                </button>
+
+                <div class="dashboard">
+                    <div class="card">
+                        <div class="card-title">Contribuição 2025</div>
+                        <div class="card-value" id="contributionStatus">800 MT</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Status</div>
+                        <div class="card-value" id="membershipStatus">Ativo</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Benefícios</div>
+                        <div class="card-value">✅ Ativo</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Membros Totais</div>
+                        <div class="card-value">45</div>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" onclick="showTab('chat')">💬 Chat</div>
+                    <div class="tab" onclick="showTab('contributions')">💰 Pagamentos</div>
+                    <div class="tab" onclick="showTab('info')">ℹ Info</div>
+                </div>
+
+                <!-- Tab Chat -->
+                <div id="chatTab" class="tab-content active">
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="message other">
+                                <div class="message-info">Diretoria • hoje</div>
+                                <div>Bem-vindos à Associação Gentes da Banda! 🤝</div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-input">
+                            <input type="text" id="messageInput" placeholder="Digite sua mensagem..." onkeypress="handleKeyPress(event)">
+                            <button onclick="sendMessage()">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Contribuições -->
+                <div id="contributionsTab" class="tab-content">
+                    <div class="info-section">
+                        <h4>📅 Ano Fiscal 2025</h4>
+                        <p>Contribuição total: 1.200 MT • Paga: 800 MT • Restante: 400 MT</p>
+                    </div>
+                    
+                    <div class="contribution-history">
+                        <div class="contribution-item">
+                            <div>
+                                <strong>Janeiro 2025</strong><br>
+                                <small>Pagamento mensal</small>
+                            </div>
+                            <div style="color: #2E8B57; font-weight: bold;">+100 MT</div>
+                        </div>
+                        <div class="contribution-item">
+                            <div>
+                                <strong>Fevereiro 2025</strong><br>
+                                <small>Pagamento mensal</small>
+                            </div>
+                            <div style="color: #2E8B57; font-weight: bold;">+100 MT</div>
+                        </div>
+                        <div class="contribution-item">
+                            <div>
+                                <strong>Março 2025</strong><br>
+                                <small>Pagamento trimestral</small>
+                            </div>
+                            <div style="color: #2E8B57; font-weight: bold;">+300 MT</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="makePayment()">💳 Fazer Pagamento</button>
+                </div>
+
+                <!-- Tab Informações -->
+                <div id="infoTab" class="tab-content">
+                    <div class="info-section">
+                        <h4>🎯 Missão da Associação</h4>
+                        <p>Promover auxílio mútuo entre membros em casos de aflição, doença grave ou morte, visando solidariedade e bem-estar comunitário.</p>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h4>🏥 Benefícios Cobertos</h4>
+                        <p>• Morte de membro ou familiar direto<br>• Doença grave comprovada<br>• Apoio em situações de emergência<br>• Cestas básicas (conforme crescimento)</p>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h4>📞 Contato</h4>
+                        <p>Email: associacaogentesdabanda@outlook.com<br>Sede: Bairro C.F.M, Mocuba, Zambézia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de dados simulada
+        let members = [
+            { 
+                email: "admin@gentesdabanda.com", 
+                password: "123456", 
+                name: "Administrador",
+                phone: "+258 84 123 4567",
+                address: "Bairro CFM, Mocuba",
+                membershipType: "regular",
+                isActive: true,
+                contribution2025: 800,
+                joinDate: "2024-01-01"
+            }
+        ];
+        
+        let messages = [];
+        let currentMember = null;
+        let activeTab = 'chat';
+
+        // Navegação
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showLogin() {
+            showScreen('loginScreen');
+            clearMessages();
+        }
+
+        function showRegister() {
+            showScreen('registerScreen');
+            clearMessages();
+        }
+
+        function clearMessages() {
+            document.getElementById('loginError').textCo
